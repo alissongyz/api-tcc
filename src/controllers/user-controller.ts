@@ -44,6 +44,12 @@ class UserController {
     //Try to save. If fails, the username is already in use
     const userRepository = getRepository(User);
 
+    if(await userRepository.findOne({ where: { username }})) {
+      return res.status(400).send({
+        usernameIsValid: false
+      })
+    }
+
     const newUser = await userRepository.save(user);
 
     //If all ok, send 201 response
@@ -53,7 +59,6 @@ class UserController {
   public async updateUser(req: Request, res: Response) {
     //Get the ID from the url
     const id = req.params.id;
-
 
     //Get values from the body
     const { username, role } = req.body;
@@ -66,8 +71,13 @@ class UserController {
       user = await userRepository.findOneOrFail({ where: { id: id } });
     } catch (error) {
       //If not found, send a 404 response
-      res.status(404).send("User not found");
-      return;
+      return res.status(404).send("User not found");
+    }
+
+    if(await userRepository.findOne({ where: { username }})) {
+      return res.status(400).send({
+        usernameIsValid: false
+      })
     }
 
     //Validate the new values on model
