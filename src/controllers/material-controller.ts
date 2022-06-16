@@ -45,7 +45,7 @@ class MaterialController {
     material.descQnty = String(descQnty).trim();
     material.minQnty = minQnty;
     material.unitValue = unitValue;
-    material.expiration = moment(expiration).format('YYYY-MM-DD HH:mm:ss');
+    material.expiration = moment(expiration).format('YYYY-MM-DD');
     material.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');
 
     try{
