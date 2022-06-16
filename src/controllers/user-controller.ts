@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
-import { validate } from "class-validator";
 import * as moment from "moment";
 
 import { User } from "../models/User";
@@ -11,7 +10,8 @@ class UserController {
     //Get users from database
     const userRepository = getRepository(User);
     const users = await userRepository.find({
-      select: ["username", "role", "dateUpdated", "dateRegister"] //We dont want to send the passwords on response
+      select: ["username", "role", "dateUpdated", "dateRegister"], //We dont want to send the passwords on response
+      where: req.query
     });
 
     //Send the users object
@@ -38,7 +38,9 @@ class UserController {
   public async createUser(req: Request, res: Response) {
     //Get parameters from the body
     let { username, password, role } = req.body;
-    let user: User = null;
+    
+    let user = new User();
+
     user.username = String(username).trim()
     user.password = password;
     user.role = role;
@@ -48,7 +50,7 @@ class UserController {
     //Try to save. If fails, the username is already in use
     const userRepository = getRepository(User);
 
-    if(await userRepository.findOne({ where: { username }})) {
+    if(await userRepository.findOne({ where: { username: username }})) {
       return res.status(400).send({
         usernameIsValid: false
       })
@@ -115,12 +117,15 @@ class UserController {
     const id = req.params.id;
 
     const userRepository = getRepository(User);
+
     let user: User;
+
     try {
       user = await userRepository.findOneOrFail({ where: { id: id } });
     } catch (error) {
       return res.status(404).send("User not found");
     }
+    
     userRepository.delete(id);
 
     //After all send a 204 (no content, but accepted) response
