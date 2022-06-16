@@ -81,21 +81,22 @@ class MaterialController {
     }
 
     //Validate the new values on model
-    material.name = String(name).trim();
-    material.descQnty = String(descQnty).trim();
-    material.expiration =  moment(expiration).format('YYYY-MM-DD HH:mm:ss');
-    material.qnty = qnty;
-    material.minQnty = minQnty;
-    material.unitValue = unitValue;
+    if (name) material.name = String(name).trim();
+    if (descQnty) material.descQnty = String(descQnty).trim();
+    if (expiration) material.expiration =  moment(expiration).format('YYYY-MM-DD');
+    if (qnty) material.qnty = +qnty;
+    if (minQnty) material.minQnty = +minQnty;
+    if (unitValue) material.unitValue = +unitValue;
     material.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss');
 
-    //Try to safe, if fails, that means username already in use
+    //Try to safe, if it fails, an error was found trying to save in the database
     try {
         await materialRepository.save(material);
         //After all send a 204 (no content, but accepted) response
         return res.status(204).send();
     } catch (e) {
-        return res.status(409).send("username already in use");
+      console.log(e);
+      return res.status(502).send("Some of the passed values are in a invalid format");
     }
     
   };
