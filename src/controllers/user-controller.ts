@@ -11,11 +11,11 @@ class UserController {
     //Get users from database
     const userRepository = getRepository(User);
     const users = await userRepository.find({
-      select: ["username", "role"] //We dont want to send the passwords on response
+      select: ["username", "role", "dateUpdated", "dateRegister"] //We dont want to send the passwords on response
     });
 
     //Send the users object
-    res.send(users);
+    return res.send(users);
   };
 
   public async getById(req: Request, res: Response) {
@@ -25,16 +25,20 @@ class UserController {
     //Get the user from database
     const userRepository = getRepository(User);
     try {
-      const user = await userRepository.findOneOrFail({ where: { id: id } });
+      const user = await userRepository.findOneOrFail({ 
+        select:["username", "role", "dateUpdated", "dateRegister"], 
+        where: { id: id } 
+      });
+      return res.status(200).send(user);
     } catch (error) {
-      res.status(404).send("User not found");
+      return res.status(404).send("User not found");
     }
   };
 
   public async createUser(req: Request, res: Response) {
     //Get parameters from the body
     let { username, password, role } = req.body;
-    let user = new User();
+    let user: User = null;
     user.username = String(username).trim()
     user.password = password;
     user.role = role;
@@ -62,7 +66,7 @@ class UserController {
 
     //Get values from the body
     const { username, role } = req.body;
-    let user = new User();
+    let user: User = null;
 
     //Try to find user on database
     const userRepository = getRepository(User);
@@ -74,31 +78,36 @@ class UserController {
       return res.status(404).send("User not found");
     }
 
-    if(await userRepository.findOne({ where: { username }})) {
-      return res.status(400).send({
-        usernameIsValid: false
-      })
+    if(username){
+      if(await userRepository.findOne({ where: { username }})) {
+        return res.status(400).send({
+          usernameIsValid: false
+        })
+      }
+    }
+
+    //Temporary validate type string on role
+    if(role){
+      if(typeof(role) != 'string'){
+        return res.status(400).send({
+          roleIsValid: false
+        });
+      }
     }
 
     //Validate the new values on model
-    user.username = String(username).trim()
+    user.username = String(username).trim();
     user.role = role;
     user.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss');
-    const errors = await validate(user);
-    if (errors.length > 0) {
-      res.status(400).send(errors);
-      return;
-    }
 
     //Try to safe, if fails, that means username already in use
     try {
       await userRepository.save(user);
     } catch (e) {
-      res.status(409).send("username already in use");
-      return;
+      return res.status(409).send("username already in use");
     }
     //After all send a 204 (no content, but accepted) response
-    res.status(204).send();
+    return res.status(204).send();
   };
 
   public async delelteUser(req: Request, res: Response) {
@@ -110,13 +119,12 @@ class UserController {
     try {
       user = await userRepository.findOneOrFail({ where: { id: id } });
     } catch (error) {
-      res.status(404).send("User not found");
-      return;
+      return res.status(404).send("User not found");
     }
     userRepository.delete(id);
 
     //After all send a 204 (no content, but accepted) response
-    res.status(204).send();
+    return res.status(204).send();
   };
 };
 
