@@ -12,16 +12,16 @@ import {
     @Column()
     name: string;
   
-    @Column("int")
+    @Column()
     qnty: number;
   
     @Column()
     descQnty: string;
 
-    @Column("int")
+    @Column()
     minQnty: number;
 
-    @Column("double")
+    @Column()
     unitValue: number;
   
     @Column()

@@ -48,18 +48,24 @@ class UserController {
 
 
     //Try to save. If fails, the username is already in use
-    const userRepository = getRepository(User);
+    try {
+      const userRepository = getRepository(User);
 
-    if(await userRepository.findOne({ where: { username: username }})) {
+      if(await userRepository.findOne({ where: { username: username }})) {
+        return res.status(400).send({
+          usernameIsValid: false
+        })
+      }
+  
+      const newUser = await userRepository.save(user);
+  
+      //If all ok, send 201 response
+      return res.status(201).send(newUser);
+    } catch(e) {
       return res.status(400).send({
-        usernameIsValid: false
+        message: "Campos inválidos."
       })
     }
-
-    const newUser = await userRepository.save(user);
-
-    //If all ok, send 201 response
-    return res.status(201).send(newUser);
   };
 
   public async updateUser(req: Request, res: Response) {
@@ -106,8 +112,9 @@ class UserController {
     try {
       await userRepository.save(user);
     } catch (e) {
-      return res.status(409).send("username already in use");
+      return res.status(409).send("Some of the passed values are in a invalid format");
     }
+
     //After all send a 204 (no content, but accepted) response
     return res.status(204).send();
   };
