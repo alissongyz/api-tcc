@@ -25,9 +25,9 @@ class UserController {
     //Get the user from database
     const userRepository = getRepository(User);
     try {
-      const user = await userRepository.findOneOrFail({ 
-        select:["username", "role", "dateUpdated", "dateRegister"], 
-        where: { id: id } 
+      const user = await userRepository.findOneOrFail({
+        select: ["username", "role", "dateUpdated", "dateRegister"],
+        where: { id: id }
       });
       return res.status(200).send(user);
     } catch (error) {
@@ -38,7 +38,7 @@ class UserController {
   public async createUser(req: Request, res: Response) {
     //Get parameters from the body
     let { username, password, role } = req.body;
-    
+
     let user = new User();
 
     user.username = String(username).trim()
@@ -51,17 +51,17 @@ class UserController {
     try {
       const userRepository = getRepository(User);
 
-      if(await userRepository.findOne({ where: { username: username }})) {
+      if (await userRepository.findOne({ where: { username: username } })) {
         return res.status(400).send({
           usernameIsValid: false
         })
       }
-  
+
       const newUser = await userRepository.save(user);
-  
+
       //If all ok, send 201 response
       return res.status(201).send(newUser);
-    } catch(e) {
+    } catch (e) {
       return res.status(400).send({
         message: "Campos inválidos."
       })
@@ -86,20 +86,11 @@ class UserController {
       return res.status(404).send("User not found");
     }
 
-    if(username){
-      if(await userRepository.findOne({ where: { username }})) {
+    if (username) {
+      if (await userRepository.findOne({ where: { username } })) {
         return res.status(400).send({
           usernameIsValid: false
         })
-      }
-    }
-
-    //Temporary validate type string on role
-    if(role){
-      if(typeof(role) != 'string'){
-        return res.status(400).send({
-          roleIsValid: false
-        });
       }
     }
 
@@ -132,7 +123,7 @@ class UserController {
     } catch (error) {
       return res.status(404).send("User not found");
     }
-    
+
     userRepository.delete(id);
 
     //After all send a 204 (no content, but accepted) response

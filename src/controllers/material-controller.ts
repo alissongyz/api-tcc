@@ -81,12 +81,12 @@ class MaterialController {
     }
 
     //Validate the new values on model
-    if (name) material.name = String(name).trim();
-    if (descQnty) material.descQnty = String(descQnty).trim();
-    if (expiration) material.expiration =  moment(expiration).format('YYYY-MM-DD');
-    if (qnty) material.qnty = +qnty;
-    if (minQnty) material.minQnty = +minQnty;
-    if (unitValue) material.unitValue = +unitValue;
+    material.name = name;
+    material.descQnty = descQnty;
+    material.expiration = moment(expiration).format('YYYY-MM-DD');
+    material.qnty = qnty;
+    material.minQnty = minQnty;
+    material.unitValue = unitValue;
     material.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss');
 
     //Try to safe, if it fails, an error was found trying to save in the database
