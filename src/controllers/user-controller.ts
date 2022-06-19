@@ -8,14 +8,33 @@ class UserController {
 
   public async getAll(req: Request, res: Response) {
     //Get users from database
-    const userRepository = getRepository(User);
-    const users = await userRepository.find({
-      select: ["username", "role", "dateUpdated", "dateRegister"], //We dont want to send the passwords on response
-      where: req.query
-    });
+    const builder = getRepository(User).createQueryBuilder('user');
 
-    //Send the users object
-    return res.send(users);
+    // Aplicando Filtros no GET ALL
+    if (req.query.username) {
+      builder.where("user.username LIKE :username", { username: `%${req.query.username}%` })
+    }
+
+    // APLICANDO ORDENAÇÃO DE DADOS PELO CAMPO NOME
+    const sort: any = req.query.sort
+
+    if (sort) {
+      builder.orderBy('user.username', sort.toLowerCase())
+    }
+
+    // APLICANDO REGRA DE PAGINAÇÃO NO GET
+    const page: number = parseInt(req.query.page as any) || 1
+    const pageSize = 5
+    const total = await builder.getCount()
+
+    builder.offset((page - 1) * pageSize).limit(pageSize)
+
+    return res.send({
+      data: await builder.getMany(), // RETORNA TODOS OS ITEMS DO BANCO
+      total, // RETORNA O TOTAL DE ITENS DO BANCO
+      page, // RETORNA A PÁGINA ATUAL
+      last_page: Math.ceil(total / pageSize) // RETORNA A QUANTIDADE DE PÁGINAS
+    })
   };
 
   public async getById(req: Request, res: Response) {

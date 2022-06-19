@@ -8,14 +8,35 @@ class MaterialController {
 
   public async getAll(req: Request, res: Response) {
     //Get users from database
-    const materialRepository = getRepository(Material);
-    const materials = await materialRepository.find({
-        select: ["name", "qnty", "descQnty", "minQnty", "unitValue", "expiration","dateUpdated", "dateRegister"], //We dont want to send the id on response
-        where: req.query
-      });
+    const builder = getRepository(Material).createQueryBuilder('material');
 
-    //Send the users object
-    return res.send(materials);
+    // Aplicando Filtros no GET ALL
+    if (req.query.name) {
+      builder.where("material.name LIKE :name", { name: `%${req.query.name}%` })
+    } else if (req.query.descQnty) {
+      builder.where("material.descQnty LIKE :descQnty", { descQnty: `%${req.query.descQnty}%` })
+    }
+
+    // APLICANDO ORDENAÇÃO DE DADOS PELO CAMPO NOME
+    const sort: any = req.query.sort
+
+    if (sort) {
+      builder.orderBy('material.name', sort.toLowerCase())
+    }
+
+    // APLICANDO REGRA DE PAGINAÇÃO NO GET
+    const page: number = parseInt(req.query.page as any) || 1
+    const pageSize = 5
+    const total = await builder.getCount()
+
+    builder.offset((page - 1) * pageSize).limit(pageSize)
+
+    return res.send({
+      data: await builder.getMany(), // RETORNA TODOS OS ITEMS DO BANCO
+      total, // RETORNA O TOTAL DE ITENS DO BANCO
+      page, // RETORNA A PÁGINA ATUAL
+      last_page: Math.ceil(total / pageSize) // RETORNA A QUANTIDADE DE PÁGINAS
+    })
   };
 
   public async getById(req: Request, res: Response) {
@@ -25,9 +46,9 @@ class MaterialController {
     //Get the user from database
     const materialRepository = getRepository(Material);
     try {
-      const material = await materialRepository.findOneOrFail({ 
-        select:["name", "qnty", "descQnty", "minQnty", "unitValue", "expiration","dateUpdated", "dateRegister"], 
-        where: { id: id } 
+      const material = await materialRepository.findOneOrFail({
+        select: ["name", "qnty", "descQnty", "minQnty", "unitValue", "expiration", "dateUpdated", "dateRegister"],
+        where: { id: id }
       });
       return res.status(200).send(material);
     } catch (error) {
@@ -48,18 +69,18 @@ class MaterialController {
     material.expiration = moment(expiration).format('YYYY-MM-DD');
     material.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');
 
-    try{
-        const materialRepository = getRepository(Material);
+    try {
+      const materialRepository = getRepository(Material);
 
-        const newMaterial = await materialRepository.save(material);
-    
-        //If all ok, send 201 response
-        return res.status(201).send(newMaterial);
-    } catch (error){
-        console.log(error);
-        return res.status(400).send("Error while trying create a new material");
+      const newMaterial = await materialRepository.save(material);
+
+      //If all ok, send 201 response
+      return res.status(201).send(newMaterial);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).send("Error while trying create a new material");
     }
-   
+
   };
 
   public async updateMaterial(req: Request, res: Response) {
@@ -91,14 +112,14 @@ class MaterialController {
 
     //Try to safe, if it fails, an error was found trying to save in the database
     try {
-        await materialRepository.save(material);
-        //After all send a 204 (no content, but accepted) response
-        return res.status(204).send();
+      await materialRepository.save(material);
+      //After all send a 204 (no content, but accepted) response
+      return res.status(204).send();
     } catch (e) {
       console.log(e);
       return res.status(502).send("Some of the passed values are in a invalid format");
     }
-    
+
   };
 
   public async deleteMaterial(req: Request, res: Response) {
@@ -118,7 +139,7 @@ class MaterialController {
     } catch (error) {
       return res.status(404).send("Material not found");
     }
-    
+
   };
 
 };
