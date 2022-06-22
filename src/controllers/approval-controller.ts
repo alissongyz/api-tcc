@@ -16,8 +16,7 @@ class ApprovalController {
         approval.itemName = itemName;
         approval.qnty = qnty;
         approval.motive = motive;
-        approval.status = "AUTHORIZED";
-        approval.deleted = false;
+        approval.status = "PENDING";
         approval.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');
 
         try {
