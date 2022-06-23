@@ -18,8 +18,8 @@ createConnection()
         // Set all routes from routes folder
         app.use("/v1", routes)
 
-        app.listen(3000, () => {
-            console.log("Server started on port 3000.")
+        app.listen(3010, () => {
+            console.log("Server started on port 3010.")
         })
 
     })

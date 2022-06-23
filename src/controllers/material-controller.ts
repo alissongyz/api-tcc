@@ -116,7 +116,6 @@ class MaterialController {
       console.log(e);
       return res.status(502).send("Some of the passed values are in a invalid format");
     }
-
   };
 
   public async deleteMaterial(req: Request, res: Response) {

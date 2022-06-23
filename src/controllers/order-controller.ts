@@ -1,0 +1,157 @@
+import { Request, Response } from "express";
+import { getRepository } from "typeorm";
+import * as moment from "moment";
+
+import { Order } from "../models/Order";
+import { Material } from "../models/Material";
+
+class OrderController {
+
+    public async createOrder(req: Request, res: Response) {
+        //Get parameters from the body
+        let { userName, itemName, qnty, motive } = req.body;
+
+        let order = new Order();
+
+        order.userName = userName;
+        order.itemName = itemName;
+        order.qnty = qnty;
+        order.motive = motive;
+        order.status = "PENDING";
+        order.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');
+
+        try {
+            const OrderRepository = getRepository(Order);
+
+            const newOrder = await OrderRepository.save(order);
+
+            //If all ok, send 201 response
+            return res.status(201).send(newOrder);
+        } catch (error) {
+            return res.status(400).send({
+                dataIsValid: false
+            });
+        }
+    };
+
+    public async findOrderPending(req: Request, res: Response) {
+        //Get users from database
+        const builder = getRepository(Order).createQueryBuilder('Order');
+
+        builder.where({ status: "PENDING" })
+
+        // APLICANDO ORDENAÇÃO DE DADOS PELO CAMPO NOME
+        const sort: any = req.query.sort
+
+        if (sort) {
+            builder.orderBy('Order.userName', sort.toLowerCase())
+        }
+
+        // APLICANDO REGRA DE PAGINAÇÃO NO GET
+        const page: number = parseInt(req.query.page as any) || 1
+        const pageSize = 8
+        const total = await builder.getCount()
+
+        builder.offset((page - 1) * pageSize).limit(pageSize)
+
+        return res.send(
+            await builder.getMany(), // RETORNA TODOS OS ITEMS DO BANCO
+        )
+    }
+
+    public async updatedOrderAndUpdatedMedicines(req: Request, res: Response) {
+        //Get the ID from the url
+        const id = req.params.id;
+
+        //Get values from the body
+        let order = new Order()
+        // mudar para medicamentos
+        let material = new Material()
+
+        //Try to find user on database
+        const orderRepository = getRepository(Order);
+        //mudar para medicamentos
+        const materialRepository = getRepository(Material);
+
+        try {
+            order = await orderRepository.findOneOrFail({ where: { uuid: id } })
+        } catch (error) {
+            //If not found, send a 404 response
+            return res.status(404).send({
+                orderIsValid: false
+            });
+        }
+
+        //Busco se o nome do produto a ser retirado da order corresponde ao nome do medicamento da tabela medicamentos
+        //Mudar para o campo nome da tabela de medicamentos
+        material = await materialRepository.findOneBy({ name: order.itemName })
+
+        // Se os nomes forem iguais eu faço a subtração da quantidade
+        try {
+            // mudar para medicamentos
+            material.qnty = material.qnty - order.qnty
+        } catch (e) {
+            console.log(e);
+            return res.status(502).send({
+                itemNameIsValid: false
+            });
+        }
+
+        // E salvo a nova quantidade na tabela de medicamentos
+        // mudar para medicamentos
+        await materialRepository.save(material)
+
+        // Salvando items na tabela de orders
+        order.status = "AUTHORIZED"
+        order.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
+
+        //Try to safe, if it fails, an error was found trying to save in the database
+        try {
+            await orderRepository.save(order);
+            //After all send a 204 (no content, but accepted) response
+            return res.status(204).send();
+        } catch (e) {
+            console.log(e);
+            return res.status(502).send({
+                dataIsValid: false
+            });
+        }
+    }
+
+    public async repprovedOrder(req: Request, res: Response) {
+        //Get the ID from the url
+        const id = req.params.id;
+
+        //Get values from the body
+        let order = new Order()
+
+        //Try to find user on database
+        const orderRepository = getRepository(Order);
+
+        try {
+            order = await orderRepository.findOneOrFail({ where: { uuid: id } });
+        } catch (error) {
+            //If not found, send a 404 response
+            return res.status(404).send("Order not found");
+        }
+
+        //Validate the new values on model
+        order.deleted = true
+        order.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss');
+
+        //Try to safe, if it fails, an error was found trying to save in the database
+        try {
+            await orderRepository.save(order);
+            //After all send a 204 (no content, but accepted) response
+            return res.status(204).send();
+        } catch (e) {
+            console.log(e);
+            return res.status(502).send({
+                dataIsValid: false
+            });
+        }
+    }
+
+};
+
+export default new OrderController();
