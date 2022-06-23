@@ -3,9 +3,9 @@ import {
     PrimaryGeneratedColumn,
     Column,
   } from "typeorm";
-  
+
   @Entity()
-  export class Approval {
+  export class Order {
     @PrimaryGeneratedColumn('uuid')
     uuid: string;
   
