@@ -1,19 +1,29 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import * as moment from "moment";
+import * as jwt from "jsonwebtoken";
 
 import { Order } from "../models/Order";
 import { Material } from "../models/Material";
+import authController from "./auth-controller";
 
 class OrderController {
 
     public async createOrder(req: Request, res: Response) {
+
+        // Recuperar o token
+        const token = req.body.token || req.query.token || req.headers['auth']
+        console.log("token", token)
+
+        // Decodificar pra conseguir pegar o usuário da sessão
+        let decodeToken : any = jwt.decode(token)
+
         //Get parameters from the body
-        let { userName, itemName, qnty, motive } = req.body;
+        let { itemName, qnty, motive } = req.body;
 
         let order = new Order();
 
-        order.userName = userName;
+        order.askedBy = decodeToken.username;
         order.itemName = itemName;
         order.qnty = qnty;
         order.motive = motive;
@@ -63,6 +73,12 @@ class OrderController {
         //Get the ID from the url
         const id = req.params.id;
 
+        // Recuperar o token
+        const token = req.body.token || req.query.token || req.headers['auth']
+
+        // Decodificar pra conseguir pegar o usuário da sessão
+        let decodeToken : any = jwt.decode(token)
+
         //Get values from the body
         let order = new Order()
         // mudar para medicamentos
@@ -102,6 +118,7 @@ class OrderController {
         await materialRepository.save(material)
 
         // Salvando items na tabela de orders
+        order.approvedBy = decodeToken.username
         order.status = "AUTHORIZED"
         order.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
 
@@ -136,6 +153,7 @@ class OrderController {
         }
 
         //Validate the new values on model
+        order.status = "NOT_AUTHORIZED"
         order.deleted = true
         order.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss');
 

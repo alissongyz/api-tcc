@@ -10,7 +10,10 @@ import {
     uuid: string;
   
     @Column()
-    userName: string;
+    askedBy: string;
+
+    @Column()
+    approvedBy: string;
   
     @Column()
     itemName: string;
