@@ -45,7 +45,7 @@ class MaterialController {
     try {
       const material = await materialRepository.findOneOrFail({
         select: ["name", "qnty", "descQnty", "minQnty", "unitValue", "expiration", "dateUpdated", "dateRegister"],
-        where: { id: id }
+        where: { uuid: id }
       });
       return res.status(200).send(material);
     } catch (error) {
@@ -92,7 +92,7 @@ class MaterialController {
     const materialRepository = getRepository(Material);
 
     try {
-      material = await materialRepository.findOneOrFail({ where: { id: id } });
+      material = await materialRepository.findOneOrFail({ where: { uuid: id } });
     } catch (error) {
       //If not found, send a 404 response
       return res.status(404).send("Material not found");
@@ -127,7 +127,7 @@ class MaterialController {
     let material: Material;
 
     try {
-      material = await materialRepository.findOneOrFail({ where: { id: id } });
+      material = await materialRepository.findOneOrFail({ where: { uuid: id } });
       materialRepository.delete(id);
 
       //After all send a 204 (no content, but accepted) response
