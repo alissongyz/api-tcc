@@ -81,7 +81,6 @@ class UserController {
       //If all ok, send 201 response
       return res.status(201).send(newUser);
     } catch (e) {
-      console.log(e);
       return res.status(400).send({
         message: "Campos inválidos."
       })
