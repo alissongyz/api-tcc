@@ -7,7 +7,7 @@ import {
   @Entity()
   export class Material {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    uuid: string;
   
     @Column()
     name: string;
