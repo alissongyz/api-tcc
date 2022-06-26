@@ -46,7 +46,7 @@ class UserController {
     try {
       const user = await userRepository.findOneOrFail({
         select: ["username", "role", "dateUpdated", "dateRegister"],
-        where: { id: id }
+        where: { uuid: id }
       });
       return res.status(200).send(user);
     } catch (error) {
@@ -81,6 +81,7 @@ class UserController {
       //If all ok, send 201 response
       return res.status(201).send(newUser);
     } catch (e) {
+      console.log(e);
       return res.status(400).send({
         message: "Campos inválidos."
       })
@@ -99,7 +100,7 @@ class UserController {
     const userRepository = getRepository(User);
 
     try {
-      user = await userRepository.findOneOrFail({ where: { id: id } });
+      user = await userRepository.findOneOrFail({ where: { uuid: id } });
     } catch (error) {
       //If not found, send a 404 response
       return res.status(404).send("User not found");
@@ -138,7 +139,7 @@ class UserController {
     let user: User;
 
     try {
-      user = await userRepository.findOneOrFail({ where: { id: id } });
+      user = await userRepository.findOneOrFail({ where: { uuid: id } });
     } catch (error) {
       return res.status(404).send("User not found");
     }

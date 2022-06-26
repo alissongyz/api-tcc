@@ -9,7 +9,7 @@ import {
 @Unique(["username"])
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  uuid: string;
 
   @Column()
   username: string;
