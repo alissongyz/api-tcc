@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import { getRepository } from "typeorm";
-
+import * as moment from "moment"; 
 import { User } from "../models/User";
 import config from "../config/config";
 
@@ -72,6 +72,8 @@ class AuthController {
         userIsValid: false
       });
     }
+
+    user.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss');
 
     //if the old password is the same as the current password, save the data, otherwise return an error
     if (oldPassword === user.password) {
