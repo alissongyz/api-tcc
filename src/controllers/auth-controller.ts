@@ -26,19 +26,18 @@ class AuthController {
       });
     }
 
-    const id = user.id
+    const id = user.uuid
 
     //if the password the user entered matches your password, return the token, otherwise return an error
     if (password === user.password) {
       //Sing JWT, valid for 1 day
       const token = jwt.sign(
-        { userId: user.id, username: user.username },
+        { userId: user.uuid, username: user.username },
         config.jwtSecret,
         { expiresIn: "1d" }
       );
 
       let objectToResponse = {
-        id,
         username
       }
 
@@ -67,7 +66,7 @@ class AuthController {
     const userRepository = getRepository(User);
     let user: User;
     try {
-      user = await userRepository.findOneOrFail({ where: { id } });
+      user = await userRepository.findOneOrFail({ where: { uuid:id } });
     } catch (id) {
       return res.status(401).send({
         userIsValid: false

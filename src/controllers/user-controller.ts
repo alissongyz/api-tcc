@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import * as moment from "moment";
 
-import { User } from "../models/User";
+import { User, UserRole } from "../models/User";
 
 class UserController {
 
@@ -60,9 +60,16 @@ class UserController {
 
     let user = new User();
 
+    if(Object.values(UserRole).includes(role)){
+      user.role = role;
+    } else {
+      return res.status(400).send({
+        message: "Campo 'role' inválido."
+      });
+    }
+
     user.username = String(username).trim()
     user.password = password;
-    user.role = role;
     user.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');
 
 
@@ -113,9 +120,16 @@ class UserController {
       }
     }
 
+    if(Object.values(UserRole).includes(role)){
+      user.role = role;
+    } else {
+      return res.status(400).send({
+        message: "Campo 'role' inválido."
+      });
+    }
+
     //Validate the new values on model
     user.username = String(username).trim();
-    user.role = role;
     user.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss');
 
     //Try to safe, if fails, that means username already in use

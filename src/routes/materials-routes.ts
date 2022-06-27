@@ -7,32 +7,32 @@ const router = Router();
 
 //Get all materials
 router.get("/",
-  /*[checkJwt, checkRole(["ADMIN"])],*/
+  /*[checkJwt],*/
   materialController.getAll);
 
 // Get one material
 router.get(
   "/:id",
-  /*[checkJwt, checkRole(["ADMIN"])],*/
+  /*[checkJwt],*/
   materialController.getById
 );
 
 //Create a new material
 router.post("/",
-  /*[checkJwt, checkRole(["ADMIN"])],*/
+  /*[checkJwt],*/
   materialController.createMaterial);
 
 //Edit one material
 router.patch(
   "/:id",
-  /*[checkJwt, checkRole(["ADMIN"])],*/
+  /*[checkJwt],*/
   materialController.updateMaterial
 );
 
 //Delete one material
 router.delete(
   "/:id",
-  /*[checkJwt, checkRole(["ADMIN"])],*/
+  /*[checkJwt],*/
   materialController.deleteMaterial
 );
 
