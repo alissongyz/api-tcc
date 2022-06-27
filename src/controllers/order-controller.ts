@@ -6,6 +6,7 @@ import * as jwt from "jsonwebtoken";
 import { Order } from "../models/Order";
 import { Material } from "../models/Material";
 import authController from "./auth-controller";
+import { Medicines } from "../models/Medicines";
 
 class OrderController {
 
@@ -82,12 +83,12 @@ class OrderController {
         //Get values from the body
         let order = new Order()
         // mudar para medicamentos
-        let material = new Material()
+        let medicine = new Medicines()
 
         //Try to find user on database
         const orderRepository = getRepository(Order);
         //mudar para medicamentos
-        const materialRepository = getRepository(Material);
+        const medicineRepository = getRepository(Medicines);
 
         try {
             order = await orderRepository.findOneOrFail({ where: { uuid: id } })
@@ -100,12 +101,12 @@ class OrderController {
 
         //Busco se o nome do produto a ser retirado da order corresponde ao nome do medicamento da tabela medicamentos
         //Mudar para o campo nome da tabela de medicamentos
-        material = await materialRepository.findOneBy({ name: order.itemName })
+        medicine = await medicineRepository.findOneBy({ name: order.itemName })
 
         // Se os nomes forem iguais eu faço a subtração da quantidade
         try {
             // mudar para medicamentos
-            material.qnty = material.qnty - order.qnty
+            medicine.qnty = medicine.qnty - order.qnty
         } catch (e) {
             console.log(e);
             return res.status(502).send({
@@ -113,9 +114,11 @@ class OrderController {
             });
         }
 
+        medicine.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
+
         // E salvo a nova quantidade na tabela de medicamentos
         // mudar para medicamentos
-        await materialRepository.save(material)
+        await medicineRepository.save(medicine)
 
         // Salvando items na tabela de orders
         order.approvedBy = decodeToken.username
