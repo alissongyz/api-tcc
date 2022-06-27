@@ -29,12 +29,9 @@ class UserController {
 
     builder.offset((page - 1) * pageSize).limit(pageSize)
 
-    return res.send({
-      data: await builder.getMany(), // RETORNA TODOS OS ITEMS DO BANCO
-      total, // RETORNA O TOTAL DE ITENS DO BANCO
-      page, // RETORNA A PÁGINA ATUAL
-      last_page: Math.ceil(total / pageSize) // RETORNA A QUANTIDADE DE PÁGINAS
-    })
+    return res.send(
+      await builder.getMany(), // RETORNA TODOS OS ITEMS DO BANCO
+    )
   };
 
   public async getById(req: Request, res: Response) {
