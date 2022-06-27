@@ -5,6 +5,13 @@ import {
   Unique,
 } from "typeorm";
 
+export enum UserRole {
+  ADMIN = 'admin',
+  VETERINARIO = 'veterinario',
+  FARMACEUTICO = 'farmaceutico',
+  USUARIO = 'usuario'
+}
+
 @Entity()
 @Unique(["username"])
 export class User {

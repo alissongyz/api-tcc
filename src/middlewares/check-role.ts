@@ -13,7 +13,7 @@ export const checkRole = (roles: Array<string>) => {
     const userRepository = getRepository(User);
     let user: User;
     try {
-      user = await userRepository.findOneOrFail({ where: { id: id } });
+      user = await userRepository.findOneOrFail({ where: { uuid: id } });
     } catch (e) {
       res.status(401).send();
     }
