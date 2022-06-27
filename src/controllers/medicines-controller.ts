@@ -24,13 +24,6 @@ class medicinesController {
       builder.orderBy('medicines.name', sort.toLowerCase())
     }
 
-    // APLICANDO REGRA DE PAGINAÇÃO NO GET
-    const page: number = parseInt(req.query.page as any) || 1
-    const pageSize = 8
-    const total = await builder.getCount()
-
-    builder.offset((page - 1) * pageSize).limit(pageSize)
-
     return res.send(
       await builder.getMany(), // RETORNA TODOS OS ITEMS DO BANCO
     )
@@ -44,7 +37,6 @@ class medicinesController {
     const medicinesRepository = getRepository(Medicines);
     try {
       const medicine = await medicinesRepository.findOneOrFail({
-        select: ["name", "qnty", "minQnty", "descQnty", "valueOfInput", "validity", "lote", "dateRegister", "dateUpdated"],
         where: { uuid: id }
       });
       return res.status(200).send(medicine);
@@ -57,7 +49,9 @@ class medicinesController {
     //Get parameters from the body
     //validty JSON deve ser YYYY-MM-DD
     let { name, qnty, minQnty, descQnty, valueOfInput, validity, lote } = req.body;
+
     let medicine = new Medicines();
+    
     medicine.name = name;
     medicine.qnty = qnty;
     medicine.minQnty = minQnty;

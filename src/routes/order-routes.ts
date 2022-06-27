@@ -11,12 +11,6 @@ router.get("/",
     OrderController.findOrderPending
 );
 
-// Get one Order
-router.get(
-    "/:id",
-    [checkJwt],
-);
-
 //Create a new Orders
 router.post("/",
     [checkJwt],
