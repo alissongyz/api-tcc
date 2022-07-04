@@ -7,27 +7,27 @@ const router = Router();
 
 //Get all Orders
 router.get("/",
-    [checkJwt],
+    /*[checkJwt],*/
     OrderController.findOrderPending
 );
 
 //Create a new Orders
 router.post("/",
-    [checkJwt],
+    /*[checkJwt],*/
     OrderController.createOrder
 );
 
 //Edit one Orders
 router.patch(
     "/:id",
-    [checkJwt],
+    /*[checkJwt],*/
     OrderController.updatedOrderAndUpdatedMedicines
 );
 
 //Delete one Orders
 router.delete(
     "/:id",
-    [checkJwt],
+    /*[checkJwt],*/
     OrderController.repprovedOrder
 );
 

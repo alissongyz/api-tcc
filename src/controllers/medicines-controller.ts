@@ -13,8 +13,6 @@ class medicinesController {
     // Aplicando Filtros no GET ALL
     if (req.query.name) {
       builder.where("medicines.name LIKE :name", { name: `%${req.query.name}%` })
-    } else if (req.query.descQnty) {
-      builder.where("material.descQnty LIKE :descQnty", { descQnty: `%${req.query.descQnty}%` })
     }
 
     // APLICANDO ORDENAÇÃO DE DADOS PELO CAMPO NOME
