@@ -70,6 +70,32 @@ class OrderController {
         )
     }
 
+    public async findOrderStatus(req: Request, res: Response) {
+        //Get users from database
+        const builder = getRepository(Order).createQueryBuilder('Order');
+
+        builder.where({ status: "AUTHORIZED"}).orWhere({ status: "NOT_AUTHORIZED"})
+
+        // APLICANDO ORDENAÇÃO DE DADOS PELO CAMPO NOME
+        const sort: any = req.query.sort
+
+        if (sort) {
+            builder.orderBy('Order.userName', sort.toLowerCase())
+        }
+
+        // APLICANDO REGRA DE PAGINAÇÃO NO GET
+        const page: number = parseInt(req.query.page as any) || 1
+        const pageSize = 8
+        const total = await builder.getCount()
+
+        builder.offset((page - 1) * pageSize).limit(pageSize)
+
+        return res.send(
+            await builder.getMany(), // RETORNA TODOS OS ITEMS DO BANCO
+        )
+    }
+
+
     public async updatedOrderAndUpdatedMedicines(req: Request, res: Response) {
         //Get the ID from the url
         const id = req.params.id;

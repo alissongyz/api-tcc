@@ -11,6 +11,12 @@ router.get("/",
     OrderController.findOrderPending
 );
 
+//Get a authorized/not_authorized Orders
+router.get("/status",
+    [checkJwt],
+    OrderController.findOrderStatus
+);
+
 // Get one Order
 router.get(
     "/:id",
