@@ -8,32 +8,32 @@ const router = Router();
 
 //Get all users
 router.get("/",
-  /*[checkJwt, checkRole([UserRole.ADMIN.toString()])],*/
+  [checkJwt],
   userController.getAll);
 
 // Get one user
 router.get(
   "/:id",
-  /*[checkJwt, checkRole([UserRole.ADMIN.toString()])],*/
+  [checkJwt],
   userController.getById
 );
 
 //Create a new user
 router.post("/",
-  /*[checkJwt, checkRole([UserRole.ADMIN.toString()])],*/
+  [checkJwt],
   userController.createUser);
 
 //Edit one user
 router.patch(
   "/:id",
-  /*[checkJwt, checkRole([UserRole.ADMIN.toString()])],*/
+  [checkJwt],
   userController.updateUser
 );
 
 //Delete one user
 router.delete(
   "/:id",
-  /*[checkJwt, checkRole([UserRole.ADMIN.toString()])],*/
+  [checkJwt],
   userController.delelteUser
 );
 

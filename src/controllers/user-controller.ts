@@ -22,13 +22,6 @@ class UserController {
       builder.orderBy('user.username', sort.toLowerCase())
     }
 
-    // APLICANDO REGRA DE PAGINAÇÃO NO GET
-    const page: number = parseInt(req.query.page as any) || 1
-    const pageSize = 5
-    const total = await builder.getCount()
-
-    builder.offset((page - 1) * pageSize).limit(pageSize)
-
     return res.send(
       await builder.getMany(), // RETORNA TODOS OS ITEMS DO BANCO
     )
@@ -42,7 +35,6 @@ class UserController {
     const userRepository = getRepository(User);
     try {
       const user = await userRepository.findOneOrFail({
-        select: ["username", "role", "dateUpdated", "dateRegister"],
         where: { uuid: id }
       });
       return res.status(200).send(user);

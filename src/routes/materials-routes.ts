@@ -7,32 +7,32 @@ const router = Router();
 
 //Get all materials
 router.get("/",
-  /*[checkJwt],*/
+  [checkJwt],
   materialController.getAll);
 
 // Get one material
 router.get(
   "/:id",
-  /*[checkJwt],*/
+  [checkJwt],
   materialController.getById
 );
 
 //Create a new material
 router.post("/",
-  /*[checkJwt],*/
+  [checkJwt],
   materialController.createMaterial);
 
 //Edit one material
 router.patch(
   "/:id",
-  /*[checkJwt],*/
+  [checkJwt],
   materialController.updateMaterial
 );
 
 //Delete one material
 router.delete(
   "/:id",
-  /*[checkJwt],*/
+  [checkJwt],
   materialController.deleteMaterial
 );
 
