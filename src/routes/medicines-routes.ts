@@ -10,7 +10,7 @@ const router = Router();
 
 //Get all medicines
 router.get("/",
-    /*[checkJwt], checkRole([UserRole.VETERINARIO.toString()])*/
+    [checkJwt],
     medicinesController.getAll);
 
 // Get one medicines
@@ -22,13 +22,13 @@ router.get(
 
 //Create a new medicines
 router.post("/",
-    /*[checkJwt], checkRole([UserRole.VETERINARIO.toString()])*/
+    [checkJwt],
   medicinesController.createMedicine);
 
 //Edit one medicine
 router.patch(
     "/:id",
-    /*[checkJwt], checkRole([UserRole.VETERINARIO.toString()])*/
+    [checkJwt],
   medicinesController.updateMedicine
 );
 
