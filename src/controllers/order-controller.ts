@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
+import { getRepository, Repository } from "typeorm";
 import * as moment from "moment";
 import * as jwt from "jsonwebtoken";
 
@@ -14,35 +14,41 @@ class OrderController {
 
         // Recuperar o token
         const token = req.body.token || req.query.token || req.headers['auth']
-        console.log("token", token)
 
         // Decodificar pra conseguir pegar o usuário da sessão
-        let decodeToken : any = jwt.decode(token)
+        let decodeToken: any = jwt.decode(token)
 
-        //Get parameters from the body
-        let { itemName, qnty, motive } = req.body;
+        const sessionUser = decodeToken.username
+        const currentDate = moment().format("YYYY-MM-DD hh:mm:ss")
+        const generateOrderNumber = Math.floor(Math.random() * 65536);
 
-        let order = new Order();
+        for (const item in req.body.order) {
 
-        order.askedBy = decodeToken.username;
-        order.itemName = itemName;
-        order.qnty = qnty;
-        order.motive = motive;
-        order.status = "PENDING";
-        order.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');
+            console.log(`${moment().format("YYYY-MM-DD hh:mm:ss")} - Iniciando solicitação de pedido->`,
+                req.body.order)
 
-        try {
-            const OrderRepository = getRepository(Order);
+            let orders = {
+                nroOrder: generateOrderNumber,
+                requiredBy: sessionUser,
+                itemName: req.body.order[item].itemName,
+                qnty: req.body.order[item].qnty,
+                motive: req.body.order[item].motive,
+                status: "PENDING",
+                dateRegister: currentDate
+            }
 
-            const newOrder = await OrderRepository.save(order);
+            console.log(`${moment().format("YYYY-MM-DD hh:mm:ss")} - Montando o pedidos ->`,
+                orders)
 
-            //If all ok, send 201 response
-            return res.status(201).send(newOrder);
-        } catch (error) {
-            return res.status(400).send({
-                dataIsValid: false
-            });
+            const orderRepository = getRepository(Order)
+
+            console.log(`${moment().format("YYYY-MM-DD hh:mm:ss")} - Enviando o pedido e salvando ->`,
+                await orderRepository.save(orders))
+
+            await orderRepository.save(orders)
         }
+
+        return res.status(201).send({ orderCreated: true })
     };
 
     public async findOrderPending(req: Request, res: Response) {
@@ -67,7 +73,7 @@ class OrderController {
         //Get users from database
         const builder = getRepository(Order).createQueryBuilder('Order');
 
-        builder.where({ status: "AUTHORIZED"}).orWhere({ status: "NOT_AUTHORIZED"})
+        builder.where({ status: "AUTHORIZED" }).orWhere({ status: "NOT_AUTHORIZED" })
 
         // APLICANDO ORDENAÇÃO DE DADOS PELO CAMPO NOME
         const sort: any = req.query.sort
@@ -76,20 +82,13 @@ class OrderController {
             builder.orderBy('Order.userName', sort.toLowerCase())
         }
 
-        // APLICANDO REGRA DE PAGINAÇÃO NO GET
-        const page: number = parseInt(req.query.page as any) || 1
-        const pageSize = 8
-        const total = await builder.getCount()
-
-        builder.offset((page - 1) * pageSize).limit(pageSize)
-
         return res.send(
             await builder.getMany(), // RETORNA TODOS OS ITEMS DO BANCO
         )
     }
 
 
-    public async updatedOrderAndUpdatedMedicines(req: Request, res: Response) {
+    public async updatedOrderAndItems(req: Request, res: Response) {
         //Get the ID from the url
         const id = req.params.id;
 
@@ -97,17 +96,17 @@ class OrderController {
         const token = req.body.token || req.query.token || req.headers['auth']
 
         // Decodificar pra conseguir pegar o usuário da sessão
-        let decodeToken : any = jwt.decode(token)
+        let decodeToken: any = jwt.decode(token)
 
         //Get values from the body
         let order = new Order()
-        // mudar para medicamentos
         let medicine = new Medicines()
+        let material = new Material()
 
         //Try to find user on database
         const orderRepository = getRepository(Order);
-        //mudar para medicamentos
         const medicineRepository = getRepository(Medicines);
+        const materialRepository = getRepository(Material);
 
         try {
             order = await orderRepository.findOneOrFail({ where: { uuid: id } })
@@ -118,26 +117,19 @@ class OrderController {
             });
         }
 
-        //Busco se o nome do produto a ser retirado da order corresponde ao nome do medicamento da tabela medicamentos
-        //Mudar para o campo nome da tabela de medicamentos
-        medicine = await medicineRepository.findOneBy({ name: order.itemName })
-
-        // Se os nomes forem iguais eu faço a subtração da quantidade
-        try {
-            // mudar para medicamentos
+        if(medicine = await medicineRepository.findOneBy({ name: order.itemName })) {
             medicine.qnty = medicine.qnty - order.qnty
-        } catch (e) {
-            console.log(e);
-            return res.status(502).send({
-                itemNameIsValid: false
-            });
+
+            medicine.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
+
+            await medicineRepository.save(medicine)
+        } else if(material = await materialRepository.findOneBy({ name: order.itemName })) {
+            material.qnty = material.qnty - order.qnty
+
+            material.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
+
+            await materialRepository.save(material)
         }
-
-        medicine.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
-
-        // E salvo a nova quantidade na tabela de medicamentos
-        // mudar para medicamentos
-        await medicineRepository.save(medicine)
 
         // Salvando items na tabela de orders
         order.approvedBy = decodeToken.username

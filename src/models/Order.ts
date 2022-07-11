@@ -8,9 +8,12 @@ import {
   export class Order {
     @PrimaryGeneratedColumn('uuid')
     uuid: string;
+
+    @Column()
+    nroOrder: number;
   
     @Column()
-    askedBy: string;
+    requiredBy: string;
 
     @Column()
     approvedBy: string;

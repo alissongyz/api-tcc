@@ -33,7 +33,7 @@ router.post("/",
 router.patch(
     "/:id",
     [checkJwt],
-    OrderController.updatedOrderAndUpdatedMedicines
+    OrderController.updatedOrderAndItems
 );
 
 //Delete one Orders
