@@ -22,17 +22,17 @@ class OrderController {
         const currentDate = moment().format("YYYY-MM-DD hh:mm:ss")
         const generateOrderNumber = Math.floor(Math.random() * 65536);
 
-        for (const item in req.body.order) {
+        for (const item in req.body.orders) {
 
             console.log(`${moment().format("YYYY-MM-DD hh:mm:ss")} - Iniciando solicitação de pedido->`,
-                req.body.order)
+                req.body.orders)
 
             let orders = {
                 nroOrder: generateOrderNumber,
                 requiredBy: sessionUser,
-                itemName: req.body.order[item].itemName,
-                qnty: req.body.order[item].qnty,
-                motive: req.body.order[item].motive,
+                itemName: req.body.orders[item].itemName,
+                qnty: req.body.orders[item].qnty,
+                motive: req.body.orders[item].motive,
                 status: "PENDING",
                 dateRegister: currentDate
             }
@@ -117,18 +117,23 @@ class OrderController {
             });
         }
 
-        if(medicine = await medicineRepository.findOneBy({ name: order.itemName })) {
+        // Regra de atualização de um medicamento/material
+        if (medicine = await medicineRepository.findOneBy({ name: order.itemName })) {
             medicine.qnty = medicine.qnty - order.qnty
 
             medicine.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
 
             await medicineRepository.save(medicine)
-        } else if(material = await materialRepository.findOneBy({ name: order.itemName })) {
+        } else if (material = await materialRepository.findOneBy({ name: order.itemName })) {
             material.qnty = material.qnty - order.qnty
 
             material.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
 
             await materialRepository.save(material)
+        } else {
+            return res.status(400).send({
+                message: "Nenhum medicamento ou material encontrado."
+            });
         }
 
         // Salvando items na tabela de orders
