@@ -14,26 +14,26 @@ router.get("/",
 // Get one user
 router.get(
   "/:id",
-  [checkJwt],
+  [checkJwt], checkRole([UserRole.ADMIN.toString()]),
   userController.getById
 );
 
 //Create a new user
 router.post("/",
-  [checkJwt],
+  [checkJwt], checkRole([UserRole.ADMIN.toString()]),
   userController.createUser);
 
 //Edit one user
 router.patch(
   "/:id",
-  [checkJwt],
+  [checkJwt], checkRole([UserRole.ADMIN.toString()]),
   userController.updateUser
 );
 
 //Delete one user
 router.delete(
   "/:id",
-  [checkJwt],
+  [checkJwt], checkRole([UserRole.ADMIN.toString()]),
   userController.delelteUser
 );
 

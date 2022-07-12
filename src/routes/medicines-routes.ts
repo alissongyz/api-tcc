@@ -16,26 +16,26 @@ router.get("/",
 // Get one medicines
 router.get(
     "/:id",
-    [checkJwt], checkRole([UserRole.VETERINARIO.toString()]),
+    [checkJwt],
   medicinesController.getById
 );
 
 //Create a new medicines
 router.post("/",
-    [checkJwt],
+    [checkJwt], checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
   medicinesController.createMedicine);
 
 //Edit one medicine
 router.patch(
     "/:id",
-    [checkJwt],
+    [checkJwt], checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
   medicinesController.updateMedicine
 );
 
 //Delete one medicine
 router.delete(
     "/:id",
-    [checkJwt], checkRole([UserRole.VETERINARIO.toString()]),
+    [checkJwt], checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
   medicinesController.deleteMedicine
 );
 

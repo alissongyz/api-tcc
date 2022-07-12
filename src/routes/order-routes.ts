@@ -2,12 +2,13 @@ import { Router } from "express";
 import OrderController from "../controllers/Order-controller";
 import { checkJwt } from "../middlewares/check-jwt";
 import { checkRole } from "../middlewares/check-role";
+import { UserRole } from "../models/User";
 
 const router = Router();
 
 //Get all Orders
 router.get("/",
-    [checkJwt],
+    [checkJwt], checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
     OrderController.findOrderPending
 );
 
@@ -20,26 +21,26 @@ router.get("/status",
 // Get one Order
 router.get(
     "/:id",
-    [checkJwt],
+    [checkJwt], checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
 );
 
 //Create a new Orders
 router.post("/",
-    [checkJwt],
+    [checkJwt], checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
     OrderController.createOrder
 );
 
 //Edit one Orders
 router.patch(
     "/:id",
-    [checkJwt],
+    [checkJwt], checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
     OrderController.updatedOrderAndItems
 );
 
 //Delete one Orders
 router.delete(
     "/:id",
-    [checkJwt],
+    [checkJwt], checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
     OrderController.repprovedOrder
 );
 
