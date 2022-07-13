@@ -55,12 +55,13 @@ class MaterialController {
     //Get parameters from the body
     //expiration JSON deve ser YYYY-MM-DD
     let { name, qnty, descQnty, minQnty, unitValue, expiration } = req.body;
+
     let material = new Material();
     material.name = name;
     material.qnty = qnty;
     material.descQnty = descQnty;
     material.minQnty = minQnty;
-    material.unitValue = unitValue;
+    material.unitValue = unitValue.replace(',', '.');
     material.expiration = moment(expiration).format('YYYY-MM-DD');
     material.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');
 
