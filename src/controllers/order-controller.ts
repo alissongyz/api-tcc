@@ -13,7 +13,7 @@ class OrderController {
     public async createOrder(req: Request, res: Response) {
 
         // Recuperar o token
-        const token = req.body.token || req.query.token || req.headers['auth']
+        const token = req.body.token || req.query.token || req.headers['x-access-token']
 
         // Decodificar pra conseguir pegar o usuário da sessão
         let decodeToken: any = jwt.decode(token)
@@ -93,7 +93,7 @@ class OrderController {
         const id = req.params.id;
 
         // Recuperar o token
-        const token = req.body.token || req.query.token || req.headers['auth']
+        const token = req.body.token || req.query.token || req.headers['x-access-token']
 
         // Decodificar pra conseguir pegar o usuário da sessão
         let decodeToken: any = jwt.decode(token)

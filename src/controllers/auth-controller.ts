@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import { getRepository } from "typeorm";
-import * as moment from "moment"; 
+import * as moment from "moment";
 import { User } from "../models/User";
 import config from "../config/config";
 
@@ -34,7 +34,7 @@ class AuthController {
       const token = jwt.sign(
         { userId: user.uuid, username: user.username },
         config.jwtSecret,
-        { expiresIn: "1d" }
+        { expiresIn: "30s" }
       );
 
       let objectToResponse = {
@@ -49,6 +49,23 @@ class AuthController {
       });
     }
   };
+
+  public async verifyToken(req: Request, res: Response) {
+    //Get the jwt token from the head
+    const token = <string>req.headers["x-access-token"];
+    let jwtPayload: string | any;
+
+    //Try to validate the token and get data
+    try {
+      jwtPayload = <any>jwt.verify(token, config.jwtSecret);
+
+      if (jwtPayload) {
+        return res.status(200).send({ tokenIsValid: true })
+      }
+    } catch (e) {
+      return res.status(400).send();
+    }
+  }
 
   public async changePassword(req: Request, res: Response) {
     //Get ID from JWT
@@ -66,7 +83,7 @@ class AuthController {
     const userRepository = getRepository(User);
     let user: User;
     try {
-      user = await userRepository.findOneOrFail({ where: { uuid:id } });
+      user = await userRepository.findOneOrFail({ where: { uuid: id } });
     } catch (id) {
       return res.status(401).send({
         userIsValid: false
