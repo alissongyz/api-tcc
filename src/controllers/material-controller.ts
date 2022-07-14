@@ -22,13 +22,6 @@ class MaterialController {
       builder.orderBy('material.name', sort.toLowerCase())
     }
 
-    // APLICANDO REGRA DE PAGINAÇÃO NO GET
-    const page: number = parseInt(req.query.page as any) || 1
-    const pageSize = 8
-    const total = await builder.getCount()
-
-    builder.offset((page - 1) * pageSize).limit(pageSize)
-
     return res.send(
       await builder.getMany(), // RETORNA TODOS OS ITEMS DO BANCO
     )
