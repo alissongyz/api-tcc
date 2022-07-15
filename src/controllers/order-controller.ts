@@ -119,17 +119,31 @@ class OrderController {
 
         // Regra de atualização de um medicamento/material
         if (medicine = await medicineRepository.findOneBy({ name: order.itemName })) {
-            medicine.qnty = medicine.qnty - order.qnty
+            if(medicine.qnty >= order.qnty){
+                medicine.qnty = medicine.qnty - order.qnty
 
-            medicine.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
-
-            await medicineRepository.save(medicine)
+                medicine.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
+    
+                await medicineRepository.save(medicine)
+            } else {
+                return res.status(400).send({
+                    medicineQnty: false
+                })
+            }
+            
         } else if (material = await materialRepository.findOneBy({ name: order.itemName })) {
-            material.qnty = material.qnty - order.qnty
+            if(material.qnty >= order.qnty){
+                material.qnty = material.qnty - order.qnty
 
-            material.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
-
-            await materialRepository.save(material)
+                material.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
+    
+                await materialRepository.save(material)
+            } else {
+                return res.status(400).send({
+                    materialQnty: false
+                })
+            }
+            
         } else {
             return res.status(400).send({
                 message: "Nenhum medicamento ou material encontrado."
