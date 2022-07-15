@@ -34,7 +34,7 @@ class AuthController {
       const token = jwt.sign(
         { userId: user.uuid, username: user.username },
         config.jwtSecret,
-        { expiresIn: "30s" }
+        { expiresIn: "1d" }
       );
 
       let objectToResponse = {

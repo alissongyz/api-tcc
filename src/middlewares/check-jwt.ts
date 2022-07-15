@@ -23,7 +23,7 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
   //We want to send a new token on every request 
   const { userId, username } = jwtPayload;
   const newToken = jwt.sign({ userId, username }, process.env.TYPEORM_SECRET, {
-    expiresIn: "30s"
+    expiresIn: "1d"
   });
   res.setHeader("token", newToken);
 
