@@ -146,7 +146,7 @@ class OrderController {
             
         } else {
             return res.status(400).send({
-                message: "Nenhum medicamento ou material encontrado."
+                itemNotFound: true
             });
         }
 
