@@ -101,14 +101,6 @@ class UserController {
       return res.status(404).send("User not found");
     }
 
-    if (username) {
-      if (await userRepository.findOne({ where: { username } })) {
-        return res.status(400).send({
-          usernameIsValid: false
-        })
-      }
-    }
-
     if(Object.values(UserRole).includes(role)){
       user.role = role;
     } else {
