@@ -54,7 +54,8 @@ class MaterialController {
     material.qnty = qnty;
     material.descQnty = descQnty;
     material.minQnty = minQnty;
-    material.unitValue = unitValue.replace(',', '.');
+    material.unitValue = unitValue;
+    material.grossValue = unitValue * qnty;
     material.expiration = moment(expiration).format('YYYY-MM-DD');
     material.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');
 

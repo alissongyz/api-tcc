@@ -54,7 +54,8 @@ class medicinesController {
     medicine.qnty = qnty;
     medicine.minQnty = minQnty;
     medicine.descQnty = descQnty;
-    medicine.valueOfInput = valueOfInput.replace(',', '.');
+    medicine.valueOfInput = valueOfInput;
+    medicine.grossValue = qnty * valueOfInput;
     medicine.lote = lote;
     medicine.validity = moment(validity).format('YYYY-MM-DD');
     medicine.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');

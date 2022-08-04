@@ -23,6 +23,9 @@ import {
 
     @Column()
     valueOfInput: number;
+
+    @Column()
+    grossValue: number;
   
     @Column()
     validity: string;
