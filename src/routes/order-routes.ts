@@ -30,6 +30,11 @@ router.post("/",
     OrderController.createOrder
 );
 
+router.post("/multiple",
+    [checkJwt], //checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
+    OrderController.createOrderMultiple
+);
+
 //Edit one Orders
 router.patch(
     "/:id",

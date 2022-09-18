@@ -51,6 +51,75 @@ class OrderController {
         return res.status(201).send({ orderCreated: true })
     };
 
+    public async createOrderMultiple(req: Request, res: Response) {
+
+        // Recuperar o token
+        const token = req.body.token || req.query.token || req.headers['x-access-token']
+
+        // Decodificar pra conseguir pegar o usuário da sessão
+        let decodeToken: any = jwt.decode(token)
+
+        const sessionUser = decodeToken.username
+        const currentDate = moment().format("YYYY-MM-DD hh:mm:ss")
+        const generateOrderNumber = Math.floor(Math.random() * 65536);
+
+        for (const item in req.body.itemsMedicine) {
+
+            console.log(`${moment().format("YYYY-MM-DD hh:mm:ss")} - Iniciando solicitação de pedido->`,
+                req.body.itemsMedicine)
+
+            let medicineOrders = {
+                nroOrder: generateOrderNumber,
+                requiredBy: sessionUser,
+                itemName: req.body.itemsMedicine[item].itemName,
+                qnty: req.body.itemsMedicine[item].qnty,
+                motive: req.body.motive,
+                status: "PENDING",
+                dateRegister: currentDate
+            }
+
+            console.log(`${moment().format("YYYY-MM-DD hh:mm:ss")} - Montando os pedidos ->`,
+            medicineOrders)
+
+            const orderRepository = getRepository(Order)
+
+            console.log(`${moment().format("YYYY-MM-DD hh:mm:ss")} - Enviando o pedido e salvando ->`,
+                await orderRepository.save(medicineOrders))
+
+           
+           
+                await orderRepository.save(medicineOrders)
+        }
+
+        for (const item in req.body.itemsMaterial) {
+
+            console.log(`${moment().format("YYYY-MM-DD hh:mm:ss")} - Iniciando solicitação de pedido->`,
+                req.body.itemsMaterial)
+
+            let materialOrders = {
+                nroOrder: generateOrderNumber,
+                requiredBy: sessionUser,
+                itemName: req.body.itemsMaterial[item].itemName,
+                qnty: req.body.itemsMaterial[item].qnty,
+                motive: req.body.motive,
+                status: "PENDING",
+                dateRegister: currentDate
+            }
+
+            console.log(`${moment().format("YYYY-MM-DD hh:mm:ss")} - Montando os pedidos ->`,
+            materialOrders)
+
+            const orderRepository = getRepository(Order)
+
+            console.log(`${moment().format("YYYY-MM-DD hh:mm:ss")} - Enviando o pedido e salvando ->`,
+                await orderRepository.save(materialOrders))
+
+            await orderRepository.save(materialOrders)
+        }
+
+        return res.status(201).send({ orderCreated: true })
+    };
+
     public async findOrderPending(req: Request, res: Response) {
         //Get users from database
         const builder = getRepository(Order).createQueryBuilder('Order');
