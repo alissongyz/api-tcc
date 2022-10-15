@@ -13,19 +13,19 @@ import {
     name: string;
   
     @Column()
-    qnty: string;
+    qnty: number;
   
     @Column()
-    descQnty: string;
+    descQnty: number;
 
     @Column()
-    minQnty: string;
+    minQnty: number;
 
     @Column()
-    unitValue: string;
+    unitValue: number;
 
     @Column()
-    grossValue: string;
+    grossValue: number;
   
     @Column()
     expiration: string;
@@ -34,5 +34,5 @@ import {
     dateRegister: Date;
   
     @Column()
-    dateUpdated: string;
+    dateUpdated: Date;
   }

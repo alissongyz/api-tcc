@@ -28,8 +28,8 @@ export class User {
   role: string;
 
   @Column()
-  dateRegister: string;
+  dateRegister: Date;
 
   @Column()
-  dateUpdated: string;
+  dateUpdated: Date;
 }

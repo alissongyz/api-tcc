@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from "typeorm";
-import { Material } from "../models/Material";
+import { User } from "../models/User";
 
-@EntityRepository(Material)
-export class MaterialRepository extends Repository<Material> {
+@EntityRepository(User)
+export class UserRepository extends Repository<User> {
 
     public findAll() {
         const query = this.createQueryBuilder("")
@@ -11,7 +11,11 @@ export class MaterialRepository extends Repository<Material> {
         return query.getRawMany();
     }
 
-    public findByUuid(uuid: string): Promise<Material> {
+    public findByUserName(username: string): Promise<User> {
+        return this.findOne({ username: username });
+    }
+
+    public findByUuid(uuid: string): Promise<User> {
         return this.findOne({ uuid: uuid });
     }
 

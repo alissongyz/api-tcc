@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
-import * as moment from "moment";
 
 import { User, UserRole } from "../models/User";
 
@@ -59,7 +58,7 @@ class UserController {
 
     user.username = String(username).trim()
     user.password = password;
-    user.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');
+    user.dateRegister = new Date();
 
 
     //Try to save. If fails, the username is already in use
@@ -111,7 +110,7 @@ class UserController {
 
     //Validate the new values on model
     user.username = String(username).trim();
-    user.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss');
+    user.dateUpdated = new Date();
 
     //Try to safe, if fails, that means username already in use
     try {

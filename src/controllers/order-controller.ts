@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
-import { getRepository, Repository } from "typeorm";
+import { getRepository } from "typeorm";
 import * as moment from "moment";
 import * as jwt from "jsonwebtoken";
 
 import { Order } from "../models/Order";
 import { Material } from "../models/Material";
-import authController from "./auth-controller";
 import { Medicines } from "../models/Medicines";
 
 class OrderController {
@@ -187,7 +186,7 @@ class OrderController {
         }
 
         // Regra de atualização de um medicamento/material
-        if (medicine = await medicineRepository.findOneBy({ name: order.itemName })) {
+        if (medicine = await medicineRepository.findOne({ name: order.itemName })) {
             if(medicine.qnty >= order.qnty){
                 medicine.qnty = medicine.qnty - order.qnty
 
@@ -200,11 +199,11 @@ class OrderController {
                 })
             }
             
-        } else if (material = await materialRepository.findOneBy({ name: order.itemName })) {
+        } else if (material = await materialRepository.findOne({ name: order.itemName })) {
             if(material.qnty >= order.qnty){
                 material.qnty = material.qnty - order.qnty
 
-                material.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss')
+                material.dateUpdated = new Date()
     
                 await materialRepository.save(material)
             } else {

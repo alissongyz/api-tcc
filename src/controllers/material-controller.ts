@@ -57,7 +57,7 @@ class MaterialController {
     material.unitValue = unitValue;
     material.grossValue = unitValue * qnty;
     material.expiration = moment(expiration).format('YYYY-MM-DD');
-    material.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');
+    material.dateRegister = new Date();
 
     try {
       const materialRepository = getRepository(Material);
@@ -98,7 +98,7 @@ class MaterialController {
     material.qnty = qnty;
     material.minQnty = minQnty;
     material.unitValue = unitValue;
-    material.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss');
+    material.dateUpdated = new Date();
 
     //Try to safe, if it fails, an error was found trying to save in the database
     try {

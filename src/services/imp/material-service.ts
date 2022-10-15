@@ -1,4 +1,3 @@
-import moment = require("moment");
 import { getConnection } from "typeorm";
 import { Provides } from "typescript-ioc";
 import { Material } from "../../models/Material";
@@ -31,8 +30,7 @@ export class MaterialService
         const data = await this.findByUuid(uuid)
 
         material.uuid = data.uuid;
-        material.dateUpdated = data.uuid;
-        material.dateUpdated = moment().format("YYYY-MM-DD HH:MM:SS")
+        material.dateUpdated = new Date()
 
         await this.repository.update({ uuid: uuid }, material);
 

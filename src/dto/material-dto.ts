@@ -10,5 +10,5 @@ export class MaterialDto {
     public grossValue: string; // item tem que vir do arquivo.xlsx
     public expiration: string; // item tem que vir do arquivo.xlsx
     public dateRegister: Date;
-    public dateUpdated: string;
+    public dateUpdated: Date;
 }

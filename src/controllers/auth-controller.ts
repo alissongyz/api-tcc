@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import { getRepository } from "typeorm";
-import * as moment from "moment";
 import { User } from "../models/User";
 import config from "../config/config";
 
@@ -25,8 +24,6 @@ class AuthController {
         userIsValid: false
       });
     }
-
-    const id = user.uuid
 
     //if the password the user entered matches your password, return the token, otherwise return an error
     if (password === user.password) {
@@ -90,7 +87,7 @@ class AuthController {
       });
     }
 
-    user.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss');
+    user.dateUpdated = new Date();
 
     //if the old password is the same as the current password, save the data, otherwise return an error
     if (oldPassword === user.password) {
