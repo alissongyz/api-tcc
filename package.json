@@ -39,7 +39,7 @@
    },
    "scripts": {
       "tsc": "tsc",
-      "start": "set debug=* && ts-node-dev --respawn --transpile-only ./src/index.ts",
+      "start": "ts-node-dev --respawn --transpile-only ./src/index.ts",
       "prod": "tsc && node ./build/app.js"
    }
 }

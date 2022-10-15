@@ -58,7 +58,7 @@ export class MaterialResources {
       console.log("UUID", uuid)
       return this.service.update(uuid, material);
     } catch (err) {
-      return res.status(400).send("deu ruim");
+      return res.status(400).json("deu ruim");
     }
   }
 
@@ -85,7 +85,7 @@ export class MaterialResources {
       })
       .catch((e: AxiosError) => {
         console.log('Deu erro na chamada da API', e);
-        res.status(400).send({ error: true })
+        return res.status(400).json({ error: true })
       });
   }
 }
