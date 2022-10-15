@@ -13,25 +13,25 @@ import {
     name: string;
   
     @Column()
-    qnty: number;
+    qnty: string;
   
     @Column()
     descQnty: string;
 
     @Column()
-    minQnty: number;
+    minQnty: string;
 
     @Column()
-    unitValue: number;
+    unitValue: string;
 
     @Column()
-    grossValue: number;
+    grossValue: string;
   
     @Column()
     expiration: string;
 
     @Column()
-    dateRegister: string;
+    dateRegister: Date;
   
     @Column()
     dateUpdated: string;
