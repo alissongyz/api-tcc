@@ -2,7 +2,7 @@ import 'reflect-metadata'
 import { createConnection } from 'typeorm'
 import * as express from 'express'
 import * as cors from 'cors'
-//import { Server } from 'typescript-rest'
+import { Server } from 'typescript-rest'
 import routes from './routes/index-routes'
 
 import bodyParser = require('body-parser');
@@ -14,8 +14,8 @@ createConnection()
         const app: any = express();
 
         /* Inicializando o novo padrão de rotas da API */
-        /*Server.useIoC();
-        Server.loadServices(app, 'resources/*', __dirname);*/
+        Server.useIoC();
+        Server.loadServices(app, 'resources/*', __dirname);
 
         app.use(function (req: express.Request, res: express.Response, next: express.NextFunction) {
             res.header("Access-Control-Allow-Origin", "*");

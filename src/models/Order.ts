@@ -31,11 +31,11 @@ import {
     status: string;
 
     @Column()
-    deleted: boolean
+    deleted: boolean;
   
     @Column()
-    dateRegister: string;
+    dateRegister: Date;
 
     @Column()
-    dateUpdated: string;
+    dateUpdated: Date;
   }

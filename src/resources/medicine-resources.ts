@@ -2,27 +2,24 @@ import { Inject } from "typescript-ioc";
 import {
   ContextResponse,
   DELETE,
-  FileParam,
   GET,
   Path,
   PathParam,
   POST,
   PUT,
 } from "typescript-rest";
-import { Material } from "../models/Material";
-import { MaterialService } from "../services/imp/material-service";
+import { MedicineService } from "../services/imp/medicine-service";
 
 import express = require("express");
-import { ExportFileService } from "../services/imp/export-file-service";
-import { AxiosError } from "axios";
+import { Medicines } from "../models/Medicines";
 
-@Path("/v1/material")
-export class MaterialResources {
+@Path("/v1/medicines")
+export class MedicineResources {
   @Inject
-  private service: MaterialService;
+  private service: MedicineService;
 
-  @Inject
-  private exportFileService: ExportFileService
+  /*@Inject
+  private exportFileService: ExportFileService*/
 
   @GET
   @Path("")
@@ -35,15 +32,15 @@ export class MaterialResources {
   @Path(":uuid")
   public findByUuid(
     @PathParam("uuid") uuid: string,
-  ): Promise<Material> {
+  ): Promise<Medicines> {
     return this.service.findByUuid(uuid);
   }
 
   @POST
   @Path("")
   public save(
-    material: Material,
-  ): Promise<Material> {
+    material: Medicines,
+  ): Promise<Medicines> {
     return this.service.save(material);
   }
 
@@ -51,11 +48,11 @@ export class MaterialResources {
   @Path("/:uuid")
   public async update(
     @PathParam("uuid") uuid: string,
-    material: Material,
+    medicine: Medicines,
     @ContextResponse res: express.Response
   ) {
     try {
-      return this.service.update(uuid, material);
+      return this.service.update(uuid, medicine);
     } catch (err) {
       return res.status(400).send("deu ruim");
     }
@@ -70,7 +67,7 @@ export class MaterialResources {
     return this.service.delete(uuid);
   }
 
-  @Path('upload')
+  /*@Path('upload')
   @POST
   public upload(
     @FileParam('xls') xls: Express.Multer.File,
@@ -86,5 +83,5 @@ export class MaterialResources {
         console.log('Deu erro na chamada da API', e);
         res.status(400).send({ error: true })
       });
-  }
+  }*/
 }
