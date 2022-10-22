@@ -118,10 +118,9 @@ class medicinesController {
     const id = req.params.id;
 
     const medicineRepository = getRepository(Medicines);
-
-    let medicine: Medicines;
-
+    
     try {
+      let medicine: Medicines;
       medicine = await medicineRepository.findOneOrFail({ where: { uuid: id } });
       medicineRepository.delete(id);
 

@@ -1,4 +1,3 @@
-import { MultipleOrder } from "../dto/multiple-order-dto";
 import { Order } from "../models/Order";
 
 export interface IOrderService {
@@ -9,10 +8,5 @@ export interface IOrderService {
 
     findByUuid(
         uuid: string
-    ): Promise<Order>;
-
-    multipleOrder(
-        multipleOrder: MultipleOrder,
-        user: any
     ): Promise<Order>;
 }

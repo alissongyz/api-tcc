@@ -8,20 +8,22 @@ import {
   PathParam,
   POST,
 } from "typescript-rest";
-import * as jwt from "jsonwebtoken";
-
-import express = require("express");
 import { OrderService } from "../services/imp/order-service";
 import { Order } from "../models/Order";
 import { OrderController } from "../controllers/Order-controller";
 import { MultipleOrder } from "../dto/multiple-order-dto";
 
+import express = require("express");
+import { JwtMiddleware } from "../middlewares/check-jwt-middleware";
 @Path("/v1")
 export class OrderResources {
   @Inject
   private service: OrderService;
 
   @Inject orderController: OrderController;
+
+  @Inject
+  private authMiddleware: JwtMiddleware;
 
   @GET
   @Path("order-pending")
@@ -30,7 +32,7 @@ export class OrderResources {
     @ContextResponse res: express.Response
   ): Promise<any> {
 
-    if (!this.validateAuth(authorization)) {
+    if (!this.authMiddleware.validateAuth(authorization)) {
       return res.status(400).send({
         message: "Token inválido"
       });
@@ -46,7 +48,7 @@ export class OrderResources {
     @ContextResponse res: express.Response
   ): Promise<any> {
 
-    if (!this.validateAuth(authorization)) {
+    if (!this.authMiddleware.validateAuth(authorization)) {
       return res.status(400).send({
         message: "Token inválido"
       });
@@ -63,19 +65,19 @@ export class OrderResources {
     @ContextResponse res: express.Response
   ): Promise<any> {
 
-    if (!this.validateAuth(authorization)) {
+    if (!this.authMiddleware.validateAuth(authorization)) {
       return res.status(400).send({
         message: "Token inválido",
       });
     }
 
-    const parsedToken: any = this.getParsedToken(authorization);
+    const parsedToken: any = this.authMiddleware.getParsedToken(authorization);
 
     const user = {
       username: parsedToken.payload.username
     }
 
-    return this.service.multipleOrder(multipleOrder, user);
+    return await this.service.multipleOrder(multipleOrder, user);
   }
 
   @DELETE
@@ -87,31 +89,12 @@ export class OrderResources {
     @ContextResponse res: express.Response
   ){
 
-    if (!this.validateAuth(authorization)) {
+    if (!this.authMiddleware.validateAuth(authorization)) {
       return res.status(400).send({
         message: "Token inválido"
       });
     }
 
-    return this.service.repprovedOrder(uuid, order);
-  }
-  
-  private getParsedToken(token: string) {
-    token = String(token)
-      .replace(" ", "")
-      .replace("Bearer", "")
-      .replace("bearer", "");
-
-    return jwt.decode(token, { complete: true });
-  }
-
-  private validateAuth(authorization: string) {
-    const parsedToken = this.getParsedToken(authorization);
-
-    if (!parsedToken) {
-      return false
-    }
-
-    return true
+    return await this.service.repprovedOrder(uuid, order);
   }
 }

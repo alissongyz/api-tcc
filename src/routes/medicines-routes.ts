@@ -1,6 +1,5 @@
 import { Router } from "express";
 import medicinesController from "../controllers/medicines-controller";
-import materialController from "../controllers/medicines-controller";
 import { checkJwt } from "../middlewares/check-jwt";
 import { checkRole } from "../middlewares/check-role";
 import { UserRole } from "../models/User";

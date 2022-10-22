@@ -4,12 +4,12 @@ import { Order } from "../models/Order";
 @EntityRepository(Order)
 export class OrderRepository extends Repository<Order> {
 
-    public findByUuid(uuid: string): Promise<Order> {
-        return this.findOne({ uuid: uuid });
+    public async findByUuid(uuid: string): Promise<Order> {
+        return await this.findOne({ uuid: uuid });
     }
 
-    public findByStatusPending() {
-        return this.createQueryBuilder("")
+    public async findByStatusPending() {
+        return await this.createQueryBuilder("")
             .select("*")
             .where({
                 status: "PENDING"
@@ -18,8 +18,8 @@ export class OrderRepository extends Repository<Order> {
             .getRawMany()
     }
 
-    public findByStatusAuthorizedAndNotAuthorized() {
-        return this.createQueryBuilder("order")
+    public async findByStatusAuthorizedAndNotAuthorized() {
+        return await this.createQueryBuilder("order")
             .select("*")
             .where(
                 { status: "AUTHORIZED" }

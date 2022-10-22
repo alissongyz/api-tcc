@@ -20,7 +20,7 @@ export class MaterialService
         material.uuid = this.randown();
         material.dateRegister = new Date()
 
-        return this.repository.save(material)
+        return await this.repository.save(material)
     }
 
     public async update(
@@ -37,13 +37,13 @@ export class MaterialService
         return await this.findByUuid(uuid)
     }
 
-    public findAll(
+    public async findAll(
     ): Promise<Array<Material>> {
-        return this.repository.findAll();
+        return await this.repository.findAll();
     }
 
-    public findByUuid(uuid: string): Promise<Material> {
-        return this.repository.findByUuid(uuid);
+    public async findByUuid(uuid: string): Promise<Material> {
+        return await this.repository.findByUuid(uuid);
     }
 
     public delete(uuid: string): void {

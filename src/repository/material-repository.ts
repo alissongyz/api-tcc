@@ -4,19 +4,19 @@ import { Material } from "../models/Material";
 @EntityRepository(Material)
 export class MaterialRepository extends Repository<Material> {
 
-    public findAll() {
+    public async findAll() {
         const query = this.createQueryBuilder("")
             .select("*")
 
-        return query.getRawMany();
+        return await query.getRawMany();
     }
 
-    public findByUuid(uuid: string): Promise<Material> {
-        return this.findOne({ uuid: uuid });
+    public async findByUuid(uuid: string): Promise<Material> {
+        return await this.findOne({ uuid: uuid });
     }
 
-    /*public delete(material: Material) {
-        return this.createQueryBuilder()
+    /*public async delete(material: Material) {
+        return await  this.createQueryBuilder()
             .update(material)
             .set({ deleted: true, dateUpdated: moment().format("YYYY-MM-DD HH:MM:SS") })
             .where("uuid = :uuid", { id: material.uuid })

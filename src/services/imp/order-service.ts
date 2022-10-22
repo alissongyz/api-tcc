@@ -3,8 +3,7 @@ import { Provides } from "typescript-ioc";
 import { IOrderService } from "../i-order-service";
 import { OrderRepository } from "../../repository/order-repository";
 import { Order } from "../../models/Order";
-import { MultipleOrder } from "../../dto/multiple-order-dto";
-import { Guid } from "guid-typescript";
+//import { Guid } from "guid-typescript";
 
 @Provides(OrderService)
 export class OrderService
@@ -14,58 +13,16 @@ export class OrderService
         OrderRepository
     );
 
-    public async multipleOrder(multipleOrder: MultipleOrder, user: any): Promise<any> {
-
-        const sessionUser = user.username;
-        const currentDate = new Date();
-        const generateOrderNumber = Math.floor(Math.random() * 65536);
-
-        multipleOrder = {
-            itemsMaterial: {
-                uuid: this.randown(),
-                nroOrder: generateOrderNumber,
-                requiredBy: sessionUser,
-                itemName: multipleOrder.itemsMaterial.itemName,
-                qnty: multipleOrder.itemsMaterial.qnty,
-                motive: multipleOrder.itemsMaterial.motive,
-                status: "PENDING",
-                dateRegister: currentDate,
-            },
-            itemsMedicine: {
-                uuid: this.randown(),
-                nroOrder: generateOrderNumber,
-                requiredBy: sessionUser,
-                itemName: multipleOrder.itemsMedicine.itemName,
-                qnty: multipleOrder.itemsMedicine.qnty,
-                motive: multipleOrder.itemsMedicine.motive,
-                status: "PENDING",
-                dateRegister: currentDate,
-            }
-        };
-
-        await this.repository.save(
-            multipleOrder.itemsMaterial
-        );
-
-        await this.repository.save(
-            multipleOrder.itemsMedicine
-        );
-
-        return {
-            orderCreated: multipleOrder
-        };
+    public async findByUuid(uuid: string): Promise<Order> {
+        return await this.repository.findByUuid(uuid);
     }
 
-    public findByUuid(uuid: string): Promise<Order> {
-        return this.repository.findByUuid(uuid);
+    public async findByStatusPending(): Promise<Array<Order>> {
+        return await this.repository.findByStatusPending();
     }
 
-    public findByStatusPending(): Promise<Array<Order>> {
-        return this.repository.findByStatusPending();
-    }
-
-    public findByStatusAuthorizedAndNotAuthorized(): Promise<Array<Order>> {
-        return this.repository.findByStatusAuthorizedAndNotAuthorized();
+    public async findByStatusAuthorizedAndNotAuthorized(): Promise<Array<Order>> {
+        return await this.repository.findByStatusAuthorizedAndNotAuthorized();
     }
 
     public async repprovedOrder(
@@ -86,7 +43,7 @@ export class OrderService
         return await this.findByUuid(uuid);
     }
 
-    private randown() {
+    /*private randown() {
         return Guid.create().toString();
-    }
+    }*/
 }

@@ -20,7 +20,7 @@ export class UserService
         user.uuid = this.randown();
         user.dateRegister = new Date()
 
-        return this.repository.save(user)
+        return await this.repository.save(user)
     }
 
     public async update(
@@ -37,13 +37,13 @@ export class UserService
         return await this.findByUuid(uuid)
     }
 
-    public findAll(
+    public async findAll(
     ): Promise<Array<User>> {
-        return this.repository.findAll();
+        return await this.repository.findAll();
     }
 
-    public findByUuid(uuid: string): Promise<User> {
-        return this.repository.findByUuid(uuid);
+    public async findByUuid(uuid: string): Promise<User> {
+        return await this.repository.findByUuid(uuid);
     }
 
     public delete(uuid: string): void {

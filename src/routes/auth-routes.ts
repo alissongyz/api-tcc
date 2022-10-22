@@ -11,8 +11,4 @@ router.post("/change-password",
     [checkJwt],
     AuthController.changePassword);
 
-router.get("/verify-token",
-    [checkJwt],
-    AuthController.verifyToken)
-
 export default router;

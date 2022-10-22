@@ -47,23 +47,6 @@ class AuthController {
     }
   };
 
-  public async verifyToken(req: Request, res: Response) {
-    //Get the jwt token from the head
-    const token = <string>req.headers["x-access-token"];
-    let jwtPayload: string | any;
-
-    //Try to validate the token and get data
-    try {
-      jwtPayload = <any>jwt.verify(token, config.jwtSecret);
-
-      if (jwtPayload) {
-        return res.status(200).send({ tokenIsValid: true })
-      }
-    } catch (e) {
-      return res.status(400).send();
-    }
-  }
-
   public async changePassword(req: Request, res: Response) {
     //Get ID from JWT
     const id = res.locals.jwtPayload.userId;

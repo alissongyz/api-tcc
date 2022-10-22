@@ -10,15 +10,22 @@ import {
   PUT,
 } from "typescript-rest";
 import { UserService } from "../services/imp/user-service";
-import * as jwt from "jsonwebtoken";
-
-import express = require("express");
 import { User } from "../models/User";
 
+import express = require("express");
+import { JwtMiddleware } from "../middlewares/check-jwt-middleware";
+import { RoleMiddleware } from "../middlewares/check-role-middleware";
+import { UserRoleEnum } from "../enum/role-enum";
 @Path("/v1/user")
 export class MaterialResources {
   @Inject
   private service: UserService;
+
+  @Inject
+  private authMiddleware: JwtMiddleware;
+
+  @Inject
+  private roleMiddleware: RoleMiddleware;
 
   @GET
   @Path("")
@@ -27,11 +34,13 @@ export class MaterialResources {
     @ContextResponse res: express.Response
   ): Promise<any> {
 
-    if (!this.validateAuth(authorization)) {
+    if (!this.authMiddleware.validateAuth(authorization)) {
       return res.status(400).send({
         message: "Token inválido"
       });
     }
+
+    await this.roleMiddleware.checkRole([UserRoleEnum.ADMIN.toString(), UserRoleEnum.FARMACEUTICO.toString()], authorization);
 
     return await this.service.findAll();
   }
@@ -44,7 +53,7 @@ export class MaterialResources {
     @ContextResponse res: express.Response
   ): Promise<any> {
 
-    if (!this.validateAuth(authorization)) {
+    if (!this.authMiddleware.validateAuth(authorization)) {
       return res.status(400).send({
         message: "Token inválido"
       });
@@ -59,9 +68,9 @@ export class MaterialResources {
     user: User,
     @HeaderParam("authorization") authorization: string,
     @ContextResponse res: express.Response
-  ):  Promise<any> {
+  ): Promise<any> {
 
-    if (!this.validateAuth(authorization)) {
+    if (!this.authMiddleware.validateAuth(authorization)) {
       return res.status(400).send({
         message: "Token inválido"
       });
@@ -77,9 +86,9 @@ export class MaterialResources {
     user: User,
     @HeaderParam("authorization") authorization: string,
     @ContextResponse res: express.Response
-  ):  Promise<any> {
+  ): Promise<any> {
 
-    if (!this.validateAuth(authorization)) {
+    if (!this.authMiddleware.validateAuth(authorization)) {
       return res.status(400).send({
         message: "Token inválido"
       });
@@ -92,7 +101,7 @@ export class MaterialResources {
     }
   }
 
-  // Esse método está desativado, por falta de informações na tabela de users. Obs: "Excluir um dado do banco NÃO É UMA BOA PRÁTICA!".
+  // Esse método não está funcionando por falta de informações na tabela de users. Obs: "Excluir um dado do banco NÃO É UMA BOA PRÁTICA!".
   @DELETE
   @Path(":uuid")
   public async delete(
@@ -101,31 +110,12 @@ export class MaterialResources {
     @ContextResponse res: express.Response
   ): Promise<any> {
 
-    if (!this.validateAuth(authorization)) {
+    if (!this.authMiddleware.validateAuth(authorization)) {
       return res.status(400).send({
         message: "Token inválido"
       });
     }
 
-    return await this.service.delete(uuid);
-  }
-
-  private getParsedToken(token: string) {
-    token = String(token)
-      .replace(" ", "")
-      .replace("Bearer", "")
-      .replace("bearer", "");
-
-    return jwt.decode(token, { complete: true });
-  }
-
-  private validateAuth(authorization: string) {
-    const parsedToken = this.getParsedToken(authorization);
-
-    if (!parsedToken) {
-      return false
-    }
-
-    return true
+    return this.service.delete(uuid);
   }
 }

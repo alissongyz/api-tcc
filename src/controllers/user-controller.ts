@@ -48,7 +48,7 @@ class UserController {
 
     let user = new User();
 
-    if(Object.values(UserRole).includes(role)){
+    if (Object.values(UserRole).includes(role)) {
       user.role = role;
     } else {
       return res.status(400).send({
@@ -100,7 +100,7 @@ class UserController {
       return res.status(404).send("User not found");
     }
 
-    if(Object.values(UserRole).includes(role)){
+    if (Object.values(UserRole).includes(role)) {
       user.role = role;
     } else {
       return res.status(400).send({
@@ -129,9 +129,8 @@ class UserController {
 
     const userRepository = getRepository(User);
 
-    let user: User;
-
     try {
+      let user: User;
       user = await userRepository.findOneOrFail({ where: { uuid: id } });
     } catch (error) {
       return res.status(404).send("User not found");

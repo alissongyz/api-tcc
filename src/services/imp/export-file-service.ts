@@ -1,14 +1,14 @@
 //import { UuidService } from "@wlp/api-core";
 import * as xlsx from "node-xlsx";
-import { Inject, Provides } from "typescript-ioc";
+import { Provides } from "typescript-ioc";
 import { MaterialDto } from "../../dto/material-dto";
 import { IExportFileService } from "../i-export-file";
-import { MaterialService } from "./material-service";
+//import { MaterialService } from "./material-service";
 
 @Provides(ExportFileService)
 export class ExportFileService implements IExportFileService {
-    @Inject
-    private materialService: MaterialService;
+    /*@Inject
+    private materialService: MaterialService;*/
 
     public async uploadMaterial(xls: Express.Multer.File): Promise<any> {
         let qtd = 0;
@@ -37,9 +37,9 @@ export class ExportFileService implements IExportFileService {
 
                     console.log(materialDto);
 
-                    await this.materialService.save(
+                    /*await this.materialService.save(
                         materialDto
-                    );
+                    );*/
                     qtd++;
                 }
             }

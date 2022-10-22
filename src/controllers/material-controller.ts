@@ -117,9 +117,8 @@ class MaterialController {
 
     const materialRepository = getRepository(Material);
 
-    let material: Material;
-
     try {
+      let material: Material;
       material = await materialRepository.findOneOrFail({ where: { uuid: id } });
       materialRepository.delete(id);
 
