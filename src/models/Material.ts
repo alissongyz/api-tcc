@@ -23,9 +23,6 @@ import {
 
     @Column()
     unitValue: number;
-
-    @Column()
-    grossValue: number;
   
     @Column()
     expiration: string;

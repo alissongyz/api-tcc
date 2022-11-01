@@ -138,6 +138,20 @@ class OrderController {
         )
     }
 
+    public async findOrderPerUser(req: Request, res: Response) {
+        //Get users from database
+        const builder = getRepository(Order).createQueryBuilder('Order');
+        const user = req.headers["x-user"];
+        console.log("printando user:" + user);
+
+        builder.where({ status: "PENDING", requiredBy: user })
+
+        return res.send(
+            await builder.getMany(), // RETORNA TODOS OS ITEMS DO BANCO
+        )
+    }
+
+
     public async findOrderStatus(req: Request, res: Response) {
         //Get users from database
         const builder = getRepository(Order).createQueryBuilder('Order');

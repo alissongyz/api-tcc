@@ -24,6 +24,13 @@ router.get(
     [checkJwt], checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
 );
 
+// Get orders from one user
+router.get(
+    "/multiple/user",
+    [checkJwt],// checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
+    OrderController.findOrderPerUser
+);
+
 //Create a new Orders
 router.post("/",
     [checkJwt], checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
