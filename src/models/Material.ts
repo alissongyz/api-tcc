@@ -16,7 +16,7 @@ import {
     qnty: number;
   
     @Column()
-    descQnty: string;
+    descQnty: number;
 
     @Column()
     minQnty: number;
@@ -28,8 +28,8 @@ import {
     expiration: string;
 
     @Column()
-    dateRegister: string;
+    dateRegister: Date;
   
     @Column()
-    dateUpdated: string;
+    dateUpdated: Date;
   }

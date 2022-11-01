@@ -31,8 +31,8 @@ import {
     lote: string;
 
     @Column()
-    dateRegister: string;
+    dateRegister: Date;
   
     @Column()
-    dateUpdated: string;
+    dateUpdated: Date;
   }

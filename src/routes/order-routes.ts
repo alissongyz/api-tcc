@@ -32,10 +32,10 @@ router.get(
 );
 
 //Create a new Orders
-router.post("/",
+/*router.post("/",
     [checkJwt], checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),
     OrderController.createOrder
-);
+);*/
 
 router.post("/multiple",
     [checkJwt], //checkRole([UserRole.FARMACEUTICO.toString()|| UserRole.ADMIN.toString()]),

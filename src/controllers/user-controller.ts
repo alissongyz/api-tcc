@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
-import * as moment from "moment";
 
 import { User, UserRole } from "../models/User";
 
@@ -49,7 +48,7 @@ class UserController {
 
     let user = new User();
 
-    if(Object.values(UserRole).includes(role)){
+    if (Object.values(UserRole).includes(role)) {
       user.role = role;
     } else {
       return res.status(400).send({
@@ -59,7 +58,7 @@ class UserController {
 
     user.username = String(username).trim()
     user.password = password;
-    user.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');
+    user.dateRegister = new Date();
 
 
     //Try to save. If fails, the username is already in use
@@ -101,7 +100,7 @@ class UserController {
       return res.status(404).send("User not found");
     }
 
-    if(Object.values(UserRole).includes(role)){
+    if (Object.values(UserRole).includes(role)) {
       user.role = role;
     } else {
       return res.status(400).send({
@@ -111,7 +110,7 @@ class UserController {
 
     //Validate the new values on model
     user.username = String(username).trim();
-    user.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss');
+    user.dateUpdated = new Date();
 
     //Try to safe, if fails, that means username already in use
     try {
@@ -130,9 +129,8 @@ class UserController {
 
     const userRepository = getRepository(User);
 
-    let user: User;
-
     try {
+      let user: User;
       user = await userRepository.findOneOrFail({ where: { uuid: id } });
     } catch (error) {
       return res.status(404).send("User not found");

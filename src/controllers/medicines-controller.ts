@@ -58,7 +58,7 @@ class medicinesController {
     medicine.grossValue = qnty * valueOfInput;
     medicine.lote = lote;
     medicine.validity = moment(validity).format('YYYY-MM-DD');
-    medicine.dateRegister = moment().format('YYYY-MM-DD HH:mm:ss');
+    medicine.dateRegister = new Date();
 
     try {
       const medicinesRepository = getRepository(Medicines);
@@ -100,7 +100,7 @@ class medicinesController {
     medicine.minQnty = minQnty;
     medicine.valueOfInput = valueOfInput;
     medicine.lote = lote;
-    medicine.dateUpdated = moment().format('YYYY-MM-DD HH:mm:ss');
+    medicine.dateUpdated = new Date();
 
     //Try to safe, if it fails, an error was found trying to save in the database
     try {
@@ -118,10 +118,9 @@ class medicinesController {
     const id = req.params.id;
 
     const medicineRepository = getRepository(Medicines);
-
-    let medicine: Medicines;
-
+    
     try {
+      let medicine: Medicines;
       medicine = await medicineRepository.findOneOrFail({ where: { uuid: id } });
       medicineRepository.delete(id);
 
