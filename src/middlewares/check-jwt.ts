@@ -18,7 +18,7 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
       tokenIsValid: false
     });
   }
-
+ 
   //The token is valid for 1 day
   //We want to send a new token on every request 
   const { userId, username } = jwtPayload;
@@ -26,6 +26,7 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
     expiresIn: "1d"
   });
   res.setHeader("token", newToken);
+  req.headers["x-user"] = username;
 
   //Call the next middleware or controller
   return next();

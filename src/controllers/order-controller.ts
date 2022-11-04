@@ -100,7 +100,6 @@ export class OrderController {
         //Get users from database
         const builder = getRepository(Order).createQueryBuilder('Order');
         const user = req.headers["x-user"];
-        console.log("printando user:" + user);
 
         builder.where({ status: "PENDING", requiredBy: user })
 

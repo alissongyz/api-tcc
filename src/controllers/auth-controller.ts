@@ -25,6 +25,8 @@ class AuthController {
       });
     }
 
+    let role = user.role;
+
     //if the password the user entered matches your password, return the token, otherwise return an error
     if (password === user.password) {
       //Sing JWT, valid for 1 day
@@ -35,7 +37,7 @@ class AuthController {
       );
 
       let objectToResponse = {
-        username
+        username, role
       }
 
       //Send the jwt in the response
